@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback Logs</title>
+    <script src="https://telegram.org/js/telegram-widget.js?22" 
+            data-telegram-login="YOUR_BOT_USERNAME" 
+            data-size="large" 
+            data-auth-url="https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/auth.html" 
+            data-request-access="write"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,6 +58,13 @@
         button:hover {
             background-color: #d32f2f;
         }
+        #authSection {
+            text-align: center;
+            margin: 50px 0;
+        }
+        #authorizedContent {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -61,32 +73,85 @@
         <a href="logs.html">View Logs</a>
     </div>
 
-    <h2>Feedback Logs</h2>
-    <button onclick="clearLogs()">Clear All Logs</button>
-    <div id="logsContainer"></div>
+    <div id="authSection">
+        <h2>Authorization Required</h2>
+        <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                data-telegram-login="YOUR_BOT_USERNAME" 
+                data-size="large" 
+                data-auth-url="https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/auth.html" 
+                data-request-access="write"></script>
+    </div>
+
+    <div id="authorizedContent">
+        <h2>Feedback Logs</h2>
+        <button onclick="clearLogs()">Clear All Logs</button>
+        <button onclick="logout()" style="background-color: #666; margin-left: 10px;">Logout</button>
+        <div id="logsContainer"></div>
+    </div>
 
     <script>
+        // Security configuration
+        const ALLOWED_USER_ID = 1209870239; // Replace with your Telegram ID
+
+        // Telegram auth handler
+        function onTelegramAuth(user) {
+            if(user.id === ALLOWED_USER_ID) {
+                sessionStorage.setItem('tg_auth', JSON.stringify(user));
+                showAuthorizedContent();
+                displayLogs();
+            } else {
+                alert('🚫 Access Denied!\n\nInvalid User ID');
+            }
+        }
+
+        // Check authentication status
+        function checkAuth() {
+            const authData = sessionStorage.getItem('tg_auth');
+            
+            if(authData) {
+                const user = JSON.parse(authData);
+                if(user.id === ALLOWED_USER_ID) {
+                    showAuthorizedContent();
+                    displayLogs();
+                    return;
+                }
+            }
+            showLoginForm();
+        }
+
+        // UI functions
+        function showLoginForm() {
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('authorizedContent').style.display = 'none';
+        }
+
+        function showAuthorizedContent() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('authorizedContent').style.display = 'block';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('tg_auth');
+            showLoginForm();
+        }
+
+        // Logs management
         function displayLogs() {
             const logs = JSON.parse(localStorage.getItem('feedbackLogs') || [];
             const container = document.getElementById('logsContainer');
             
-            if (logs.length === 0) {
-                container.innerHTML = '<p>No logs available</p>';
-                return;
-            }
-
-            container.innerHTML = logs.map((log, index) => `
-                <div class="log-entry ${log.status}">
-                    <div class="timestamp">${new Date(log.timestamp).toLocaleString()}</div>
-                    ${log.status === 'success' ? `
-                        <div class="log-content">Username: ${log.showUsername === 'Yes' ? '@' + log.username : 'Hidden'}</div>
-                        <div class="log-content">Message: ${log.message}</div>
-                    ` : `
-                        <div class="log-content">Error: ${log.error}</div>
-                    `}
-                    <div class="log-content">Status: ${log.status.toUpperCase()}</div>
-                </div>
-            `).join('');
+            container.innerHTML = logs.length === 0 
+                ? '<p>No logs available</p>'
+                : logs.map(log => `
+                    <div class="log-entry ${log.status}">
+                        <div class="timestamp">${new Date(log.timestamp).toLocaleString()}</div>
+                        ${log.status === 'success' 
+                            ? `<div class="log-content">Username: ${log.showUsername === 'Yes' ? '@' + log.username : 'Hidden'}</div>
+                               <div class="log-content">Message: ${log.message}</div>`
+                            : `<div class="log-content">Error: ${log.error}</div>`}
+                        <div class="log-content">Status: ${log.status.toUpperCase()}</div>
+                    </div>`
+                ).join('');
         }
 
         function clearLogs() {
@@ -94,8 +159,8 @@
             displayLogs();
         }
 
-        // Initial load
-        displayLogs();
+        // Initial check
+        checkAuth();
     </script>
 </body>
 </html>
