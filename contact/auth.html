@@ -1,1 +1,29 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Auth Handler</title>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.hash.substr(1));
+        const authData = {
+            id: params.get('id'),
+            first_name: params.get('first_name'),
+            last_name: params.get('last_name'),
+            username: params.get('username'),
+            photo_url: params.get('photo_url'),
+            auth_date: params.get('auth_date'),
+            hash: params.get('hash')
+        };
+        
+        if(window.opener) {
+            window.opener.postMessage({
+                type: 'telegram-auth',
+                data: authData
+            }, 'https://trytosmilepls.github.io');
+        }
+        window.close();
+    </script>
+</body>
+</html>
