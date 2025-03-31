@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback Logs</title>
-    <script src="https://telegram.org/js/telegram-widget.js?22" 
-            data-telegram-login="trytosmilepls_bot" 
-            data-size="large" 
-            data-auth-url="https://trytosmilepls.github.io/contact/auth.html" 
-            data-request-access="write"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -75,9 +70,11 @@
 
     <div id="authSection">
         <h2>Authorization Required</h2>
-        <script async src="https://telegram.org/js/telegram-widget.js?22" 
-                data-telegram-login="trytosmilepls_bot" 
+        <script async 
+                src="https://telegram.org/js/telegram-widget.js?22" 
+                data-telegram-login="trytosmilepls_bot"
                 data-size="large" 
+                data-radius="14"
                 data-auth-url="https://trytosmilepls.github.io/contact/auth.html" 
                 data-request-access="write"></script>
     </div>
@@ -90,24 +87,21 @@
     </div>
 
     <script>
-        // Security configuration
-        const ALLOWED_USER_ID = 1209870239; // Replace with your Telegram ID
+        const ALLOWED_USER_ID = 1209870239; // Замените на ваш реальный Telegram ID
 
-        // Telegram auth handler
         function onTelegramAuth(user) {
+            console.log('Auth data:', user);
             if(user.id === ALLOWED_USER_ID) {
                 sessionStorage.setItem('tg_auth', JSON.stringify(user));
                 showAuthorizedContent();
                 displayLogs();
             } else {
-                alert('🚫 Access Denied!\n\nInvalid User ID');
+                alert('🚫 Access Denied!\n\nYour User ID: ' + user.id);
             }
         }
 
-        // Check authentication status
         function checkAuth() {
             const authData = sessionStorage.getItem('tg_auth');
-            
             if(authData) {
                 const user = JSON.parse(authData);
                 if(user.id === ALLOWED_USER_ID) {
@@ -119,7 +113,6 @@
             showLoginForm();
         }
 
-        // UI functions
         function showLoginForm() {
             document.getElementById('authSection').style.display = 'block';
             document.getElementById('authorizedContent').style.display = 'none';
@@ -135,9 +128,8 @@
             showLoginForm();
         }
 
-        // Logs management
         function displayLogs() {
-            const logs = JSON.parse(localStorage.getItem('feedbackLogs') || [];
+            const logs = JSON.parse(localStorage.getItem('feedbackLogs') || '[]');
             const container = document.getElementById('logsContainer');
             
             container.innerHTML = logs.length === 0 
@@ -159,7 +151,6 @@
             displayLogs();
         }
 
-        // Initial check
         checkAuth();
     </script>
 </body>
