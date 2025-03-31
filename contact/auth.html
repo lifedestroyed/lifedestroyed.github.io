@@ -3,27 +3,41 @@
 <head>
     <meta charset="utf-8">
     <title>Auth Handler</title>
+    <script>
+        function parseAndSendAuthData() {
+            try {
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                const authData = {
+                    id: hashParams.get('id'),
+                    first_name: hashParams.get('first_name'),
+                    last_name: hashParams.get('last_name'),
+                    username: hashParams.get('username'),
+                    photo_url: hashParams.get('photo_url'),
+                    auth_date: hashParams.get('auth_date'),
+                    hash: hashParams.get('hash')
+                };
+
+                if(window.opener) {
+                    window.opener.postMessage({
+                        type: 'telegram-auth',
+                        data: authData
+                    }, 'https://trytosmilepls.github.io');
+                    
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                } else {
+                    window.location.href = '/contact/logs.html';
+                }
+            } catch(error) {
+                console.error('Auth processing error:', error);
+                window.close();
+            }
+        }
+
+        window.onload = parseAndSendAuthData;
+    </script>
 </head>
 <body>
-    <script>
-        const params = new URLSearchParams(window.location.hash.substr(1));
-        const authData = {
-            id: params.get('id'),
-            first_name: params.get('first_name'),
-            last_name: params.get('last_name'),
-            username: params.get('username'),
-            photo_url: params.get('photo_url'),
-            auth_date: params.get('auth_date'),
-            hash: params.get('hash')
-        };
-        
-        if(window.opener) {
-            window.opener.postMessage({
-                type: 'telegram-auth',
-                data: authData
-            }, 'https://trytosmilepls.github.io');
-        }
-        window.close();
-    </script>
 </body>
 </html>
