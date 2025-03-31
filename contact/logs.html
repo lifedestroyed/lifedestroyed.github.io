@@ -87,27 +87,50 @@
     </div>
 
     <script>
-        const ALLOWED_USER_ID = 1209870239; // Замените на ваш реальный Telegram ID
+        // Конфигурация
+        const ALLOWED_USER_ID = 1209870239; // ЗАМЕНИТЕ НА ВАШ REAL TG ID
 
-        function onTelegramAuth(user) {
-            console.log('Auth data:', user);
-            if(user.id === ALLOWED_USER_ID) {
+        // Обработчик сообщений
+        window.addEventListener('message', (event) => {
+            if (event.origin !== 'https://trytosmilepls.github.io') return;
+            
+            if(event.data.type === 'telegram-auth') {
+                const userData = event.data.data;
+                handleTelegramAuth({
+                    id: parseInt(userData.id),
+                    username: userData.username,
+                    hash: userData.hash
+                });
+            }
+        });
+
+        // Основные функции
+        function handleTelegramAuth(user) {
+            console.log('Auth Data:', user);
+            
+            if(user && user.id === ALLOWED_USER_ID) {
                 sessionStorage.setItem('tg_auth', JSON.stringify(user));
                 showAuthorizedContent();
                 displayLogs();
             } else {
-                alert('🚫 Access Denied!\n\nYour User ID: ' + user.id);
+                alert('🚫 Access Denied!\n\nYour User ID: ' + (user?.id || 'undefined'));
+                sessionStorage.removeItem('tg_auth');
+                showLoginForm();
             }
         }
 
         function checkAuth() {
             const authData = sessionStorage.getItem('tg_auth');
             if(authData) {
-                const user = JSON.parse(authData);
-                if(user.id === ALLOWED_USER_ID) {
-                    showAuthorizedContent();
-                    displayLogs();
-                    return;
+                try {
+                    const user = JSON.parse(authData);
+                    if(user.id === ALLOWED_USER_ID) {
+                        showAuthorizedContent();
+                        displayLogs();
+                        return;
+                    }
+                } catch(e) {
+                    console.error('Session parse error:', e);
                 }
             }
             showLoginForm();
@@ -125,11 +148,11 @@
 
         function logout() {
             sessionStorage.removeItem('tg_auth');
-            showLoginForm();
+            window.location.reload();
         }
 
         function displayLogs() {
-            const logs = JSON.parse(localStorage.getItem('feedbackLogs') || '[]');
+            const logs = JSON.parse(localStorage.getItem('feedbackLogs') || []);
             const container = document.getElementById('logsContainer');
             
             container.innerHTML = logs.length === 0 
@@ -151,6 +174,7 @@
             displayLogs();
         }
 
+        // Инициализация
         checkAuth();
     </script>
 </body>
