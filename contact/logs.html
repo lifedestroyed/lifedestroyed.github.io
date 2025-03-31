@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .nav-links {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .log-entry {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        .error {
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .log-content {
+            margin: 5px 0;
+        }
+        button {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="index.html">Feedback Form</a>
+        <a href="logs.html">View Logs</a>
+    </div>
+
+    <h2>Feedback Logs</h2>
+    <button onclick="clearLogs()">Clear All Logs</button>
+    <div id="logsContainer"></div>
+
+    <script>
+        function displayLogs() {
+            const logs = JSON.parse(localStorage.getItem('feedbackLogs') || [];
+            const container = document.getElementById('logsContainer');
+            
+            if (logs.length === 0) {
+                container.innerHTML = '<p>No logs available</p>';
+                return;
+            }
+
+            container.innerHTML = logs.map((log, index) => `
+                <div class="log-entry ${log.status}">
+                    <div class="timestamp">${new Date(log.timestamp).toLocaleString()}</div>
+                    ${log.status === 'success' ? `
+                        <div class="log-content">Username: ${log.showUsername === 'Yes' ? '@' + log.username : 'Hidden'}</div>
+                        <div class="log-content">Message: ${log.message}</div>
+                    ` : `
+                        <div class="log-content">Error: ${log.error}</div>
+                    `}
+                    <div class="log-content">Status: ${log.status.toUpperCase()}</div>
+                </div>
+            `).join('');
+        }
+
+        function clearLogs() {
+            localStorage.removeItem('feedbackLogs');
+            displayLogs();
+        }
+
+        // Initial load
+        displayLogs();
+    </script>
+</body>
+</html>
