@@ -11,6 +11,14 @@
             margin: 20px auto;
             padding: 20px;
         }
+        .nav-links {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin-right: 15px;
+        }
         .form-group {
             margin-bottom: 15px;
         }
@@ -53,6 +61,11 @@
     </style>
 </head>
 <body>
+    <div class="nav-links">
+        <a href="index.html">Feedback Form</a>
+        <a href="logs.html">View Logs</a>
+    </div>
+
     <h2>Feedback Form</h2>
     <form id="feedbackForm" onsubmit="sendFeedback(event)">
         <div class="form-group">
@@ -82,8 +95,8 @@
         async function sendFeedback(event) {
             event.preventDefault();
             
-            const botToken = '7833287099:AAFjW7WYX9aeb2YK3Iiegsv5UpAX2on8ib4'; // Replace with your bot token
-            const chatId = '1209870239'; // Target user ID
+            const botToken = 'YOUR_BOT_TOKEN';
+            const chatId = '1209870239';
             
             const username = document.getElementById('username').value;
             const message = document.getElementById('message').value;
@@ -109,12 +122,32 @@
                 const data = await response.json();
                 
                 if (data.ok) {
+                    const logEntry = {
+                        timestamp: new Date().toISOString(),
+                        username: username,
+                        message: message,
+                        showUsername: showUsername,
+                        status: 'success'
+                    };
+                    saveToLogs(logEntry);
                     showStatus('Message sent successfully!', 'success');
                     document.getElementById('feedbackForm').reset();
                 } else {
+                    const logEntry = {
+                        timestamp: new Date().toISOString(),
+                        error: data.description,
+                        status: 'error'
+                    };
+                    saveToLogs(logEntry);
                     showStatus(`Error: ${data.description}`, 'error');
                 }
             } catch (error) {
+                const logEntry = {
+                    timestamp: new Date().toISOString(),
+                    error: error.message,
+                    status: 'error'
+                };
+                saveToLogs(logEntry);
                 showStatus(`Error: ${error.message}`, 'error');
             }
         }
@@ -124,6 +157,12 @@
             statusMessage.textContent = text;
             statusMessage.className = `status ${className}`;
             statusMessage.style.display = 'block';
+        }
+
+        function saveToLogs(entry) {
+            const logs = JSON.parse(localStorage.getItem('feedbackLogs') || '[]');
+            logs.unshift(entry);
+            localStorage.setItem('feedbackLogs', JSON.stringify(logs));
         }
     </script>
 </body>
