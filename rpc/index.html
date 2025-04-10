@@ -15,8 +15,11 @@
         }
         header {
             margin-bottom: 20px;
+            padding: 20px;
+            background-color: #333; /* Цвет фона заголовка */
+            border-radius: 5px; /* Закругление углов */
         }
-        h1 {
+        h1, h2 {
             margin-bottom: 20px;
         }
         p {
@@ -44,18 +47,42 @@
             max-width: 150px;
             margin-bottom: 20px;
         }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-left: 20px;
+        }
+        nav a {
+            color: white; /* Цвет ссылок в навигации */
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="https://raw.githubusercontent.com/trytosmilepls/trytosmilepls.github.io/refs/heads/main/logo.png" alt="Логотип" class="logo">
-    <h1>DRY RPC</h1>
-    <p>Создайте уникальное присутствие в Discord с помощью нашего приложения!</p>
+    <div class="header-content">
+        <a href="https://trytosmilepls.github.io">
+            <img src="https://raw.githubusercontent.com/trytosmilepls/trytosmilepls.github.io/refs/heads/main/logo.png" alt="Логотип" class="logo">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="https://trytosmilepls.github.io">На главную</a></li>
+            </ul>
+        </nav>
+    </div>
 </header>
 
 <section>
-    <h2>Описание программы</h2>
+    <h2>Создайте свою активность в Discord!</h2>
+    
+    <p>Вы хотите создать свою активность в Discord, как в играх? Вы можете сделать это с помощью DRY RPC!</p>
+
+    <h3>Описание программы</h3>
     <p>
         DRY RPC позволяет вам легко настраивать и запускать
         свое собственное отображение в Discord. Вы можете добавлять изображения,
@@ -65,6 +92,12 @@
         Просто заполните необходимые поля и начните использовать ваше пользовательское
         присутствие!
     </p>
+
+    <h3>Как это работает?</h3>
+    <p>С помощью DRY RPC вы можете легко настроить взаимодействие в Discord, создать кнопку для Rich Presence, и так далее.</p>
+
+    <h3>Скачать DRY RPC</h3>
+    <p>Нажмите на кнопку ниже, чтобы скачать установщик:</p>
 </section>
 
 <a href="https://github.com/trytosmilepls/trytosmilepls.github.io/rpc/downloadable-files/setup.exe" class="download-button" download>
@@ -73,7 +106,7 @@
 
 <footer>
     <p>© 2025 trysmile/trytosmilepls. Все права защищены.</p>
-    <p><a href="https://github.com/trytosmilepls/trytosmilepls.github.io" style="color: #4CAF50;">GitHub Репозиторий</a></p>
+    <p><a href="https://github.com/trytosmilepls/trytosmilepls.github.io/rpc" style="color: #4CAF50;">GitHub Репозиторий</a></p>
 </footer>
 
 </body>
