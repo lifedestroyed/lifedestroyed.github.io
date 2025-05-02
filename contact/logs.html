@@ -75,7 +75,7 @@
                 data-telegram-login="trytosmilepls_bot"
                 data-size="large" 
                 data-radius="14"
-                data-auth-url="https://trytosmilepls.github.io/contact/auth.html" 
+                data-auth-url="https://lifedestroyed.github.io/contact/auth.html" 
                 data-request-access="write"></script>
     </div>
 
@@ -92,7 +92,7 @@
 
         // Обработчик сообщений
         window.addEventListener('message', (event) => {
-            if (event.origin !== 'https://trytosmilepls.github.io') return;
+            if (event.origin !== 'lifedestroyed.github.io') return;
             
             if(event.data.type === 'telegram-auth') {
                 const userData = event.data.data;
