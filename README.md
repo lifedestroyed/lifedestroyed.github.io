@@ -1,2 +1,2 @@
-# trytosmilepls.github.io
+# lifedestroyed.github.io
 Official trysmile's website.
